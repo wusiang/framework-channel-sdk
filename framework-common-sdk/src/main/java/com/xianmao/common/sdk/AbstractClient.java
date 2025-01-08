@@ -68,9 +68,9 @@ public abstract class AbstractClient {
         String reqMethod = endpoint.getMethod();
         String url = host + endpoint.getUrl();
         if (reqMethod.equals("GET")) {
-            return this.httpConnection.getRequest(url + "?" + strParam);
+            return this.httpConnection.doGet(url + "?" + strParam);
         } else if (reqMethod.equals("POST")) {
-            return this.httpConnection.postRequest(url, strParam);
+            return this.httpConnection.doPost(url, strParam);
         } else {
             throw new ChannelSdkException("Method only support (GET, POST)");
         }

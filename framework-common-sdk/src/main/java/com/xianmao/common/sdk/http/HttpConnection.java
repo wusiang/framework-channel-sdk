@@ -15,6 +15,7 @@ public class HttpConnection {
 
     private OkHttpClient client;
     private static final OkHttpClient clientSingleton = new OkHttpClient();
+    private final String CONTENT_TYPE = "Content-Type";
 
     public HttpConnection(Integer connTimeout, Integer readTimeout, Integer writeTimeout) {
         this.client = clientSingleton.newBuilder()
@@ -45,17 +46,7 @@ public class HttpConnection {
         this.client = this.client.newBuilder().sslSocketFactory(sslSocketFactory, trustManager).build();
     }
 
-    public Response doRequest(Request request) throws ChannelSdkException {
-        Response response = null;
-        try {
-            response = this.client.newCall(request).execute();
-        } catch (IOException e) {
-            throw new ChannelSdkException(e.getClass().getName() + "-" + e.getMessage());
-        }
-        return response;
-    }
-
-    public Response getRequest(String url) throws ChannelSdkException {
+    public Response doGet(String url) throws ChannelSdkException {
         Request request = null;
         try {
             request = new Request.Builder().url(url).get().build();
@@ -66,7 +57,7 @@ public class HttpConnection {
         return this.doRequest(request);
     }
 
-    public Response getRequest(String url, Headers headers) throws ChannelSdkException {
+    public Response doGet(String url, Headers headers) throws ChannelSdkException {
         Request request = null;
         try {
             request = new Request.Builder().url(url).headers(headers).get().build();
@@ -77,7 +68,7 @@ public class HttpConnection {
         return this.doRequest(request);
     }
 
-    public Response postRequest(String url, String body) throws ChannelSdkException {
+    public Response doPost(String url, String body) throws ChannelSdkException {
         MediaType contentType = MediaType.parse("application/x-www-form-urlencoded");
         Request request = null;
         try {
@@ -89,9 +80,9 @@ public class HttpConnection {
         return this.doRequest(request);
     }
 
-    public Response postRequest(String url, String body, Headers headers)
+    public Response doPost(String url, String body, Headers headers)
             throws ChannelSdkException {
-        MediaType contentType = MediaType.parse(headers.get("Content-Type"));
+        MediaType contentType = MediaType.parse(headers.get(CONTENT_TYPE));
         Request request = null;
         try {
             request =
@@ -107,9 +98,9 @@ public class HttpConnection {
         return this.doRequest(request);
     }
 
-    public Response postRequest(String url, byte[] body, Headers headers)
+    public Response doPost(String url, byte[] body, Headers headers)
             throws ChannelSdkException {
-        MediaType contentType = MediaType.parse(headers.get("Content-Type"));
+        MediaType contentType = MediaType.parse(headers.get(CONTENT_TYPE));
         Request request = null;
         try {
             request =
@@ -123,5 +114,15 @@ public class HttpConnection {
         }
 
         return this.doRequest(request);
+    }
+
+    private Response doRequest(Request request) throws ChannelSdkException {
+        Response response = null;
+        try {
+            response = this.client.newCall(request).execute();
+        } catch (IOException e) {
+            throw new ChannelSdkException(e.getClass().getName() + "-" + e.getMessage());
+        }
+        return response;
     }
 }
