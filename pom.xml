@@ -11,7 +11,7 @@
     <url>http://maven.apache.org</url>
     <modules>
         <module>framework-common-sdk</module>
-        <module>framework-mt-sdk</module>
+        <module>framework-tianmao-sdk</module>
     </modules>
 
     <properties>
